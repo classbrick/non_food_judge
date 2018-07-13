@@ -54,13 +54,16 @@ import sys
 
 
 if __name__ == '__main__':
-  if len(sys.argv) < 3:
-    print('Invalid usage\n'
-          'usage: preprocess_imagenet_validation_data.py '
-          '<validation data dir> <validation labels file>')
-    sys.exit(-1)
-  data_dir = sys.argv[1]
-  validation_labels_file = sys.argv[2]
+  # if len(sys.argv) < 3:
+  #   print('Invalid usage\n'
+  #         'usage: preprocess_imagenet_validation_data.py '
+  #         '<validation data dir> <validation labels file>')
+  #   sys.exit(-1)
+  # data_dir = sys.argv[1]
+  # validation_labels_file = sys.argv[2]
+
+  data_dir = 'E:\\imagenet\\imagenet\\ILSVRC2012_img_val'
+  validation_labels_file = 'E:\\imagenet\\imagenet\\ILSVRC2012_img_val\\imagenet_2012_validation_synset_labels.txt'
 
   # Read in the 50000 synsets associated with the validation data set.
   labels = [l.strip() for l in open(validation_labels_file).readlines()]
