@@ -17,7 +17,7 @@ class eval_preprocess:
     tfrecord_addr=None
     class_num = None
     def __init__(self,tfrecord_addr, class_num):
-        print('choose test_preprocess')
+        print('choose eval_preprocess')
         self.tfrecord_addr =tfrecord_addr
         self.class_num = class_num
     def def_preposess(self, batch_size):

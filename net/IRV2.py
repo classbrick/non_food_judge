@@ -9,5 +9,6 @@ def inception_arg_scope():
 
 def def_net(inputs, num_classes=1001, is_training=True):
     with slim.arg_scope(irv2.inception_resnet_v2_arg_scope()):
-        logits, endpoints = irv2.inception_resnet_v2(inputs, num_classes=num_classes, is_training=is_training)
+        logits, endpoints = irv2.inception_resnet_v2(
+            inputs, num_classes=num_classes, is_training=is_training, reuse=tf.AUTO_REUSE)
         return logits, endpoints

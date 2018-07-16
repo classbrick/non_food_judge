@@ -54,7 +54,34 @@ def convert_folders(root_folder, tfrecord_root):
         convert_a_folder(tfrecord_root, folder, label)
 
 
+def convert_folders_2(root_folder, tfrecord_root):
+    '''
+    将root_folder下的每一个子文件夹根据food_还是foodnon_来分为两类
+    food_的标签为[1, 0]，foodnon_的标签为[0, 1]，除了food_的都是[0, 1]
+    :param root_folder: 图片的位置，每个子文件夹包含一定量的图片
+    :param tfrecord_root: 要存储tfrecord的位置
+    :return:
+    '''
+    print('start convert')
+    ret_dict = {}
+    if not os.path.exists(root_folder):
+        print('%s doesnt exist' % root_folder)
+        return
+    folder_list = os.listdir(root_folder)
+    max_len = len(folder_list)
+    for i in range(max_len):
+        label = np.zeros([2], dtype=np.int64)
+        basename = folder_list[i]
+        ret_dict[i] = basename
+        if 'food_' in basename:
+            label = [1, 0]
+        else:
+            label = [0, 1]
+        folder = root_folder + basename + '/'
+        convert_a_folder(tfrecord_root, folder, label)
+
+
 if __name__ == '__main__':
-    root_folder = 'E:/imagenet/imagenet/train_img/'
-    tfrecord_root = 'E:/imagenet/imagenet/train_tfrecord/'
-    convert_folders(root_folder, tfrecord_root)
+    root_folder = 'E:/imagenet/imagenet/food_and_foodnon/20180706第一波二分数据/训练集--正负样本各十万/'
+    tfrecord_root = 'E:/imagenet/imagenet/food_and_foodnon/20180706第一波二分数据/tfrecord_train/'
+    convert_folders_2(root_folder, tfrecord_root)
