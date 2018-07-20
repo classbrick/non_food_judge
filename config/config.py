@@ -3,6 +3,7 @@
 
 class config:
     ckpt_path = 'model/base_model/inception_resnet_v2_2016_08_30.ckpt'
+    test_cpkt_path = 'D:/Users/zhengnan.luo/PycharmProjects/non_food_judge/model/save/gpu-nonfood_30000.000000_1.382898_0.906250/chamo.ckpt'
     output_path = 'model/'
     eval_tfrecord_path = 'E:/imagenet/imagenet/food_and_foodnon/20180706/tfrecord_test/'
     train_tfrecord_path = 'E:/imagenet/imagenet/food_and_foodnon/20180706/tfrecord_eval/'

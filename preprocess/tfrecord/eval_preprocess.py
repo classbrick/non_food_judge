@@ -28,8 +28,8 @@ class eval_preprocess:
         images, labels = tf.train.shuffle_batch(
             [image, label],
             batch_size=c,
-            num_threads=1,
-            capacity=5 * c,
-            min_after_dequeue=3 * c
+            num_threads=3,
+            capacity=200 * c,
+            min_after_dequeue=199 * c
         )
         return images, labels

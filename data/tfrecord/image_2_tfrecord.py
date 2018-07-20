@@ -5,15 +5,19 @@ from PIL import Image
 slim = tf.contrib.slim
 
 
-def convert_a_folder(tfrecord_root, folder_path, label):
+def convert_a_folder(tfrecord_root, folder_path, label, bestnum):
     if not os.path.exists(tfrecord_root):
         os.makedirs(tfrecord_root)
     temp_folder_path = folder_path[0:len(folder_path)-2]
     folder_name = os.path.basename(temp_folder_path)
     print('converting %s' % folder_name)
-    tfrecord_writer = tf.python_io.TFRecordWriter(tfrecord_root + folder_name + '.tfrecord')
     img_list = os.listdir(folder_path)
+    count = 0
+    recordfilenum = 0
+    tffilename = tfrecord_root + folder_name + '_' + str(recordfilenum) + '.tfrecord'
+    tfrecord_writer = tf.python_io.TFRecordWriter(tffilename)
     for img_name in img_list:
+        count += 1
         try:
             image_data = tf.gfile.FastGFile(folder_path + img_name, 'rb').read()
             img = Image.open(folder_path + img_name, 'r')
@@ -25,13 +29,19 @@ def convert_a_folder(tfrecord_root, folder_path, label):
                     'img_width': tf.train.Feature(int64_list=tf.train.Int64List(value=[size[0]])),
                     'img_height': tf.train.Feature(int64_list=tf.train.Int64List(value=[size[1]]))
                 }))
-            tfrecord_writer.write(example.SerializeToString())
         except:
             continue
+        if count > bestnum:
+            count = 1
+            recordfilenum = recordfilenum + 1
+            tffilename = tfrecord_root + folder_name + '_' +  str(recordfilenum) + '.tfrecord'
+            tfrecord_writer = tf.python_io.TFRecordWriter(tffilename)
+            print('creating: ' + tffilename)
+        tfrecord_writer.write(example.SerializeToString())
     tfrecord_writer.close()
 
 
-def convert_folders(root_folder, tfrecord_root):
+def convert_folders(root_folder, tfrecord_root, bestnum):
     '''
     将root_folder下的每一个子文件夹
     :param root_folder: 图片的位置，每个子文件夹包含一定量的图片
@@ -51,10 +61,10 @@ def convert_folders(root_folder, tfrecord_root):
         basename = folder_list[i]
         ret_dict[i] = basename
         folder = root_folder + basename + '/'
-        convert_a_folder(tfrecord_root, folder, label)
+        convert_a_folder(tfrecord_root, folder, label, bestnum)
 
 
-def convert_folders_2(root_folder, tfrecord_root):
+def convert_folders_2(root_folder, tfrecord_root, bestnum):
     '''
     将root_folder下的每一个子文件夹根据food_还是foodnon_来分为两类
     food_的标签为[1, 0]，foodnon_的标签为[0, 1]，除了food_的都是[0, 1]
@@ -78,10 +88,10 @@ def convert_folders_2(root_folder, tfrecord_root):
         else:
             label = [0, 1]
         folder = root_folder + basename + '/'
-        convert_a_folder(tfrecord_root, folder, label)
+        convert_a_folder(tfrecord_root, folder, label, bestnum)
 
 
 if __name__ == '__main__':
-    root_folder = 'E:/imagenet/imagenet/food_and_foodnon/20180706第一波二分数据/训练集--正负样本各十万/'
-    tfrecord_root = 'E:/imagenet/imagenet/food_and_foodnon/20180706第一波二分数据/tfrecord_train/'
-    convert_folders_2(root_folder, tfrecord_root)
+    root_folder = 'E:/imagenet/imagenet/food_and_foodnon/20180706/训练集--正负样本各十万/'
+    tfrecord_root = 'E:/imagenet/imagenet/food_and_foodnon/20180706/tfrecord_train_each100/'
+    convert_folders_2(root_folder, tfrecord_root, 100)
